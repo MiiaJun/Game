@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 import './App.css'
 
 const enemyTypes = [{ id: 0, label: 'Basic Enemy' }]
