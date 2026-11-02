@@ -20,7 +20,7 @@ export default function App() {
 		e.preventDefault();
 
 		try {
-			await axios.post('YOUR_PHP_URL', {
+			await axios.post('https://game.rabutenri.com/api/createSpawnRequest.php', {
 				name: formData.name,
 				type: formData.type
 			});
