@@ -49,7 +49,7 @@ export default function App() {
 			alert('Failed to submit spawn request')
 		} finally {
 			setIsSubmitting(false)
-			setCooldown(3)
+			setCooldown(10)
 		}
 	}
 
