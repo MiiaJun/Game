@@ -2,13 +2,30 @@ import { useState } from 'react'
 import axios from 'axios'
 import './App.css'
 
-const enemyTypes = [{ id: 0, label: 'Basic Enemy' }]
+const enemyTypes = [
+	{id: 0, label: 'Basic Enemy'},
+	{id: 1, label: 'Speed Enemy'},
+	{id: 2, label: 'Range Enemy'}
+]
 
 export default function App() {
+	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [cooldown, setCooldown] = useState(0)
+
 	const [formData, setFormData] = useState({
 		name: '',
 		type: '0',
 	})
+
+	useEffect(() => {
+		if (cooldown === 0) return
+
+		const timer = setTimeout(() => {
+			setCooldown((prev) => prev - 1)
+		}, 1000)
+
+		return () => clearTimeout(timer)
+	}, [cooldown])
 
 	const handleChange = (e) => {
 		setFormData((prev) => ({
@@ -20,6 +37,9 @@ export default function App() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
+		if (isSubmitting || cooldown > 0) return
+		setIsSubmitting(true)
+
 		try {
 			await axios.post('https://game.rabutenri.com/api/createSpawnRequest.php', {
 				name: formData.name,
@@ -27,6 +47,9 @@ export default function App() {
 			});
 		} catch (error) {
 			alert('Failed to submit spawn request')
+		} finally {
+			setIsSubmitting(false)
+			setCooldown(3)
 		}
 	}
 
@@ -57,7 +80,9 @@ export default function App() {
 					))}
 				</select>
 
-				<button>Spawn Enemy</button>
+				<button disabled={isSubmitting || cooldown > 0}>
+					{cooldown > 0 ? cooldown : "Spawn Enemy"}
+				</button>
 			</form>
 		</main>
 	)
